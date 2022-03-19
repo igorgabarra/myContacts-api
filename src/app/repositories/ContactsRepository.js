@@ -10,10 +10,10 @@ const contacts = [
   },
 ];
 
-class ContactRepositories {
+class ContactsRepositories {
   findAll() {
     return new Promise((resolve) => resolve(contacts));
   }
 }
 
-module.exports = new ContactRepositories();
+module.exports = new ContactsRepositories();
