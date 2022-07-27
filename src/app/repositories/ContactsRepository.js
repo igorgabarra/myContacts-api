@@ -4,16 +4,28 @@ class ContactsRepositories {
   async findAll(orderBy = 'ASC') {
     const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
 
-    const rows = await db.query(`SELECT * FROM contacts ORDER BY name ${direction}`);
+    const rows = await db.query(`
+      SELECT
+        co.*,
+        ca.name AS category_name
+      FROM contacts co
+      LEFT JOIN categories ca
+        ON co.category_id = ca.id
+      ORDER BY co.name ${direction}
+    `);
 
     return rows;
   }
 
   async findById(id) {
     const [row] = await db.query(`
-      SELECT *
-      FROM contacts
-      WHERE id = $1
+      SELECT
+        co.*,
+        ca.name AS category_name
+      FROM contacts co
+      LEFT JOIN categories ca
+        ON co.category_id = ca.id
+      WHERE co.id = $1
       ORDER BY id DESC
       LIMIT 1
     `, [id]);
@@ -23,10 +35,14 @@ class ContactsRepositories {
 
   async findByEmail(email) {
     const [row] = await db.query(`
-      SELECT *
-      FROM contacts
-      WHERE email = $1
-      ORDER BY id DESC
+      SELECT
+        co.*,
+        ca.name AS category_name
+      FROM contacts co
+      LEFT JOIN categories ca
+        ON co.category_id = ca.id
+      WHERE co.email = $1
+      ORDER BY co.id DESC
       LIMIT 1
     `, [email]);
 
